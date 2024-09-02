@@ -3,7 +3,7 @@
     <layout-logo />
 
     <el-card class="login-card" shadow="never">
-      <el-text class="login-title" tag="h2">Войти</el-text>
+      <el-text class="login-title" tag="h2">Войти 💅</el-text>
 
       <el-form class="form" ref="loginForm">
         <el-form-item prop="username">

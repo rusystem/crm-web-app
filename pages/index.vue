@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="header">
-      <el-text tag="h1" size="large">Личный кабинет</el-text>
+      <el-text tag="h1" size="large">Личный кабинет 💅</el-text>
     
       <el-text tag="p">
         Здесь хранится Вся информация по Поставщикам компании. <br />
