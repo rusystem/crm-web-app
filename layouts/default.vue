@@ -1,18 +1,14 @@
 <template>
   <main class="main">
     <aside v-show="isOpen" class="aside">
-      <div class="logo">
-        <el-badge value="Pre-Alpha 0.0.1" type="primary">
-          <el-text tag="b" size="large">Помогатор</el-text>
-        </el-badge>
-      </div>
+      <layout-logo />
 
-      <div class="navigation">
+      <div class="navigation navigation__first">
         <template v-for="(item, index) in navigation" :key="index">
           <nuxt-link
             v-if="!item.children || !item.children.length"
             :to="item.to"
-            class="navigation__item"
+            :class="['navigation__item', { 'navigation__item--active': route.path === item.to }]"
           >
             {{ item.name }}
           </nuxt-link>
@@ -25,24 +21,42 @@
             <nuxt-link
               v-for="(childrenItem, childrenIndex) in item.children"
               :key="childrenIndex"
-              class="navigation__item"
-              :to="childrenItem.to"
+              :class="['navigation__item', 'navigation__item--children', { 'navigation__item--active': route.path === childrenItem.to }]"
+              :to="!childrenItem.disabled ? childrenItem.to : null"
             >
               {{ childrenItem.name }}
             </nuxt-link>
           </div>
         </template>
       </div>
+
+      <!-- <div class="navigation navigation__second">
+        <el-button @click="tourOpen = true">
+          Tour
+        </el-button>
+
+        <el-tour v-model="tourOpen">
+          <el-tour-step :target="ref1?.$el" title="Управление сайдбаром">
+            <div>Сворачивайте и разворачивайте как хотите.</div>
+          </el-tour-step>
+
+          <el-tour-step :target="ref2?.$el" title="Можно выйти из кабинета">
+            <div>Если вдруг вы хотите сменить аккаунт или еще шо.</div>
+          </el-tour-step>
+        </el-tour>
+      </div> -->
     </aside>
 
     <div :class="['page', { 'page--short': isOpen }]">
       <header class="header">
-        <div class="header__inner">
-          <el-button @click="isOpen = !isOpen">
+        <div class="header__item">
+          <el-button ref="ref1" @click="isOpen = !isOpen">
             <Icon name="solar:hamburger-menu-linear" />
           </el-button>
+        </div>
 
-          <el-button @click="logout">Выйти</el-button>
+        <div class="header__item">
+          <el-button ref="ref2" @click="logout">Выйти</el-button>
         </div>
       </header>
       
@@ -55,7 +69,10 @@
 
 <script setup lang="ts">
 import { useAuth } from '~/composables/useAuth';
+import type { ButtonInstance } from 'element-plus'
+
 const { logout } = useAuth();
+const route = useRoute();
 
 const isOpen = ref(true);
 
@@ -65,21 +82,40 @@ const navigation = reactive([
     to: '/',
   },
   {
-    name: 'Разделы',
+    name: 'Склад',
     children: [
       {
         name: 'Поставщики',
-        to: '/suppliers'
+        to: '/warehouse/suppliers',
+      },
+      {
+        name: 'На приходе',
+        to: '/warehouse/in-the-parish',
+        disabled: true,
+      },
+      {
+        name: 'Для закупа',
+        to: '/warehouse/for-the-purchase',
+        disabled: true,
+      },
+      {
+        name: 'Производство',
+        to: '/warehouse/production',
+        disabled: true,
       },
     ],
   },
 ]);
+
+const tourOpen = ref(false);
+const ref1 = ref<ButtonInstance>();
+const ref2 = ref<ButtonInstance>();
 </script>
 
 <style lang="scss" scoped>
 .page {
   &--short {
-    margin-left: 240px;
+    margin-left: calc(240px + .5rem);
   }
 }
 
@@ -89,12 +125,18 @@ const navigation = reactive([
 
 .header {
   position: sticky;
-  top: 0;
+  top: .5rem;
   display: flex;
   align-items: center;
-  background-color: #fff;
-  border-bottom: 1px solid var(--el-border-color);
-  z-index: 4;
+  justify-content: space-between;
+  z-index: 99;
+  margin: 0 1rem 2rem;
+
+  &__item {
+    .el-button {
+      // box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    }
+  }
 
   &__inner {
     width: 100%;
@@ -111,19 +153,16 @@ const navigation = reactive([
   width: 240px;
   height: 100%;
   z-index: 5;
-  border-right: 1px solid var(--el-border-color);
   top: 0;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #fff;
-}
-
-.header, .logo {
-  height: 60px;
+  // box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  margin: .5rem;
+  border-radius: 12px;
+  background-color: #ffffff;
+  border: 1px solid rgb(239, 239, 239);
+  border-left: none;
+  
+  box-shadow: rgba(240, 46, 170, 0.4) -2px -2px, rgba(240, 46, 170, 0.3) -4px -4px, rgba(240, 46, 170, 0.2) -6px -6px, rgba(240, 46, 170, 0.1) -8px -8px, rgba(240, 46, 170, 0.05) -10px -10px;
+  // box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 }
 
 .navigation {
@@ -138,12 +177,24 @@ const navigation = reactive([
   &__item {
     padding: .5rem 1rem;
     text-decoration: none;
+    font-size: .75rem;
+    color: #000000;
 
     &--section {
       font-size: .75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: #ccc;
+      font-weight: 500;
+      color: #838383;
+      margin-top: 1rem;
+    }
+
+    &--children {
+      // padding-left: 2rem;
+    }
+
+    &:hover:not(.navigation__item--section),
+    &.navigation__item--active {
+      background-color: #f871c3;
+      color: #fff;
     }
   }
 }

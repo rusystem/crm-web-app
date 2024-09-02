@@ -1,19 +1,23 @@
 <template>
   <div class="login-container">
+    <layout-logo />
+
     <el-card class="login-card" shadow="never">
-      <el-text class="login-title" tag="h2">Login</el-text>
+      <el-text class="login-title" tag="h2">Войти</el-text>
 
       <el-form class="form" ref="loginForm">
         <el-form-item prop="username">
-          <el-input v-model="username" placeholder="Username"></el-input>
+          <el-input v-model="username" placeholder="Пользователь"></el-input>
         </el-form-item>
 
         <el-form-item prop="password">
-          <el-input v-model="password" placeholder="Password" show-password></el-input>
+          <el-input v-model="password" placeholder="Пароль" show-password></el-input>
         </el-form-item>
 
         <el-form-item class="login-submit">
-          <el-button class="login-submit" type="primary" @click="onSubmit">Login</el-button>
+          <el-button class="login-submit" type="primary" @click="onSubmit">
+            Войти
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -33,11 +37,6 @@ const router = useRouter();
 
 const username = ref('');
 const password = ref('');
-
-const rules = {
-  username: [{ required: true, message: 'Please input username', trigger: 'blur' }],
-  password: [{ required: true, message: 'Please input password', trigger: 'blur' }],
-};
 
 const login = async () => {
   try {
@@ -70,8 +69,10 @@ const onSubmit = () => {
 <style scoped lang="scss">
 .login-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 2rem;
   height: 100vh;
 }
 
@@ -79,7 +80,11 @@ const onSubmit = () => {
   padding: 30px;
   width: 100%;
   max-width: 240px;
-  border-radius: 8px;
+  border-radius: 12px;
+  box-shadow: rgba(240, 46, 170, 0.4) -2px -2px, rgba(240, 46, 170, 0.3) -4px -4px, rgba(240, 46, 170, 0.2) -6px -6px, rgba(240, 46, 170, 0.1) -8px -8px, rgba(240, 46, 170, 0.05) -10px -10px;
+  background-color: #ffffff;
+  border: 1px solid rgb(239, 239, 239);
+  border-left: none;
 }
 
 .login-title {
