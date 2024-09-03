@@ -72,19 +72,17 @@ const onSubmit = () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 2rem;
   height: 100vh;
 }
 
 .login-card {
-  padding: 30px;
+  padding: 0 1rem;
   width: 100%;
-  max-width: 240px;
+  max-width: 300px;
   border-radius: 12px;
-  box-shadow: rgba(240, 46, 170, 0.4) -2px -2px, rgba(240, 46, 170, 0.3) -4px -4px, rgba(240, 46, 170, 0.2) -6px -6px, rgba(240, 46, 170, 0.1) -8px -8px, rgba(240, 46, 170, 0.05) -10px -10px;
+  // box-shadow: rgba(240, 46, 170, 0.4) -2px -2px, rgba(240, 46, 170, 0.3) -4px -4px, rgba(240, 46, 170, 0.2) -6px -6px, rgba(240, 46, 170, 0.1) -8px -8px, rgba(240, 46, 170, 0.05) -10px -10px;
   background-color: #ffffff;
   border: 1px solid rgb(239, 239, 239);
-  border-left: none;
 }
 
 .login-title {
