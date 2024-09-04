@@ -3,7 +3,7 @@
     <el-text class="logo__text" tag="b" size="large">
       Pomogator
       <sup class="logo__special">Pink Edition v0.0.1.0</sup>
-      <sub class="logo__route">{{ route.path }}</sub>
+      <div class="logo__route"><span>{{ route.path }}</span></div>
     </el-text>
   </div>
 </template>
@@ -23,11 +23,10 @@ const route = useRoute();
   // background-color: #ff009b;
   // margin: .5rem;
   // border-radius: 4px;
-  border-bottom: 1px solid rgb(239, 239, 239);
 
   &__text {
     position: relative;
-    color: #000;
+    color: var(--el-text-color-regular);
     font-size: 22px;
   }
 
@@ -43,9 +42,15 @@ const route = useRoute();
 
   &__route {
     position: absolute;
-    left: 25%;
+    left: 10%;
     top: -.25rem;
     font-size: .5rem;
+    white-space: nowrap;
+    max-width: 8rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
   }
 }
 </style>

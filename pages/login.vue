@@ -3,22 +3,24 @@
     <layout-logo />
 
     <el-card class="login-card" shadow="never">
-      <el-text class="login-title" tag="h2">Войти 💅</el-text>
-
       <el-form class="form" ref="loginForm">
         <el-form-item prop="username">
-          <el-input v-model="username" placeholder="Пользователь"></el-input>
+          <el-input v-model="username" placeholder="Имя пользователя или email" :disabled="step === 1" @change="password = ''"></el-input>
         </el-form-item>
 
-        <el-form-item prop="password">
+        <el-form-item v-show="step === 1" prop="password">
           <el-input v-model="password" placeholder="Пароль" show-password></el-input>
         </el-form-item>
 
-        <el-form-item class="login-submit">
-          <el-button class="login-submit" type="primary" @click="onSubmit">
+        <div class="login-actions">
+          <el-button class="login-submit" type="primary" @click="nextStep">
             Войти
           </el-button>
-        </el-form-item>
+
+          <el-button class="login-submit" type="secondary" @click="fakeLogin">
+            Фейковый вход
+          </el-button>
+        </div>
       </el-form>
     </el-card>
   </div>
@@ -34,6 +36,8 @@ definePageMeta({ layout: "login" });
 
 const { $apiClient } = useNuxtApp();
 const router = useRouter();
+
+const step = ref(0);
 
 const username = ref('');
 const password = ref('');
@@ -52,8 +56,6 @@ const login = async () => {
     token.value = response.token;
     refreshToken.value = response.refresh_token;
     expiresAt.value = response.expires_in;
-
-    ElMessage.success('Login successful');
     await router.push('/');
   } catch (error) {
     console.log(error)
@@ -61,12 +63,38 @@ const login = async () => {
   }
 };
 
-const onSubmit = () => {
-  login();
+const nextStep = async () => {
+  if (step.value === 0) {
+    if (password.value) {
+      await login();
+      return;
+    }
+
+    step.value = 1;
+    return;
+  }
+
+  await login();
+};
+
+const fakeLogin = () => {
+  const token = useCookie('token');
+  token.value = 'fake-token';
+  router.push('/');
 };
 </script>
 
 <style scoped lang="scss">
+.el-form {
+  &-item {
+    margin-bottom: .5rem;
+  }
+}
+
+.el-button+.el-button {
+  margin-left: .5rem;
+}
+
 .login-container {
   display: flex;
   flex-direction: column;
@@ -81,8 +109,8 @@ const onSubmit = () => {
   max-width: 300px;
   border-radius: 12px;
   // box-shadow: rgba(240, 46, 170, 0.4) -2px -2px, rgba(240, 46, 170, 0.3) -4px -4px, rgba(240, 46, 170, 0.2) -6px -6px, rgba(240, 46, 170, 0.1) -8px -8px, rgba(240, 46, 170, 0.05) -10px -10px;
-  background-color: #ffffff;
-  border: 1px solid rgb(239, 239, 239);
+  background-color: var(--el-bg-color);
+  border: 1px solid var(--el-border-color-lighter);
 }
 
 .login-title {
@@ -92,7 +120,12 @@ const onSubmit = () => {
   font-weight: 600;
 }
 
+.login-actions {
+  display: flex;
+}
+
 .login-submit {
   width: 100%;
+
 }
 </style>
