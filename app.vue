@@ -40,8 +40,8 @@ html {
     --el-text-color-disabled: #d0d0d0; /* Очень светлый серый */
 
     /* Цвета границ */
-    --el-border-color: #d0d0d0; /* Светлый серый */
-    --el-border-color-light: #e0e0e0; /* Очень светлый серый */
+    --el-border-color: #f5f5f5; /* Светлый серый */
+    --el-border-color-light: #f5f5f5; /* Очень светлый серый */
     --el-border-color-lighter: #f5f5f5; /* Почти белый */
     --el-border-color-dark: #b3b3b3; /* Средний серый */
     --el-border-color-darker: #999999; /* Темный серый */
@@ -115,6 +115,6 @@ html {
 
 
 .dark:root {
-  // --el-text-color-regular: #fff;
+  --el-text-color-regular: #fff;
 }
 </style>

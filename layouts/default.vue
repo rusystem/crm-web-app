@@ -1,13 +1,14 @@
 <template>
   <main :class="['main', { 'main--mobile': isMobileRef }]">
-    <aside v-show="isOpen" class="aside">
-      <nuxt-link to="/" @click="isMobileRef ? isOpen = false : null">
+    <aside :class="['aside', { 'aside--open': isOpen }]">
+      <nuxt-link class="home"to="/" @click="isMobileRef ? isOpen = false : null">
         <layout-logo />
       </nuxt-link>
 
-      <div class="aside-close" @click="isOpen = false">
-        <Icon class="aside-close__icon" name="solar:close-circle-linear" />
-      </div>
+      <el-button ref="ref1" class="aside-close" @click="isOpen = !isOpen">
+        <Icon v-if="isOpen" class="aside-close__icon" name="solar:close-circle-linear" />
+        <Icon v-else class="aside-close__icon" name="solar:hamburger-menu-linear" />
+      </el-button>
 
       <div class="navigation navigation__first">
         <template v-for="(item, index) in navigation" :key="index">
@@ -71,11 +72,12 @@
 
     <div :class="['page', { 'page--short': isOpen }]">
       <header class="header">
-        <div class="header-item">
+        <!-- <div class="header-item">
           <el-button ref="ref1" @click="isOpen = !isOpen">
             <Icon name="solar:hamburger-menu-linear" />
           </el-button>
-        </div>
+        </div> -->
+        <div></div>
 
         <div class="header-item">
           <el-dropdown placement="bottom-end" @command="handleCommand">
@@ -239,7 +241,10 @@ const handleCommand = (command: string | number | object) => {
 };
 
 watch(isOpen, (newValue) => {
-  document.body.style.overflow = newValue ? 'hidden' : 'auto';
+  console.log(isMobileRef)
+  if (isMobileRef.value) {
+    document.body.style.overflow = newValue ? 'hidden' : 'auto';
+  }
 });
 
 onMounted(() => {
@@ -254,6 +259,8 @@ onBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .main {
+  position: relative;
+
   &--mobile {
     .page {
       &--short {
@@ -262,16 +269,25 @@ onBeforeUnmount(() => {
     }
 
     .aside {
-      width: calc(100% - 8rem);
+      width: 100%;
+      max-width: 280px;
+      left: -280px;
+      // transition: .25s ease;
 
-      &-close {
-        display: block;
+      // &-close {
+      //   display: block;
+      // }
+
+      &--open {
+        left: 0;
       }
     }
   }
 }
 
 .page {
+  transition: .25s ease;
+  
   &--short {
     margin-left: calc(240px + .5rem);
   }
@@ -279,6 +295,10 @@ onBeforeUnmount(() => {
 
 .content {
   margin: 1rem;
+}
+
+.home {
+  text-decoration: none;
 }
 
 .header {
@@ -323,24 +343,19 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   z-index: 999;
-  // border-left: none;
-  
-  // box-shadow: rgba(240, 46, 170, 0.4) -2px -2px, rgba(240, 46, 170, 0.3) -4px -4px, rgba(240, 46, 170, 0.2) -6px -6px, rgba(240, 46, 170, 0.1) -8px -8px, rgba(240, 46, 170, 0.05) -10px -10px;
-  // box-shadow: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;box-shadow: rgba(0, 0, 0, 0.4) -2px -2px, rgba(0, 0, 0, 0.3) -4px -4px, rgba(0, 0, 0, 0.2) -6px -6px, rgba(0, 0, 0, 0.1) -8px -8px, rgba(0, 0, 0, 0.05) -10px -10px;
+  transition: left .25s ease;
+  left: -240px;
 
   &-close {
-    display: none;
     position: absolute;
     top: 0;
-    right: 0;
-    border: none;
-    padding: .5rem;
+    left: calc(100% + .5rem);
     cursor: pointer;
+  }
 
-    &__icon {
-      width: 2rem;
-      height: 2rem;
-    }
+  &--open {
+    // left: 0;
+    left: 0;
   }
 }
 
@@ -367,7 +382,7 @@ onBeforeUnmount(() => {
     padding: .5rem 1rem;
     text-decoration: none;
     font-size: .75rem;
-    color: #000000;
+    color: var(--el-text-color-regular);
     border-radius: 4px;
     margin: 0 .5rem;
     border: 1px solid transparent;
@@ -388,7 +403,7 @@ onBeforeUnmount(() => {
 
     &:hover:not(.navigation__item--section):not(.navigation__item--disabled),
     &.navigation__item--active {
-      background-color: #f5f7fa;
+      background-color: var(--el-fill-color);
     }
 
     &.navigation__item--active {
