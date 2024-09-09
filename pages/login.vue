@@ -1,9 +1,11 @@
 <template>
   <div class="login-container">
-    <layout-logo />
+    <nuxt-link class="header-item" to="/" @click="isMobileRef ? isOpen = false : null">
+      <el-text tag="b">Pomogator</el-text>
+    </nuxt-link>
 
     <el-card class="login-card" shadow="never">
-      <el-form class="form" ref="loginForm">
+      <el-form v-if="form === 'login'" class="form" ref="loginForm">
         <el-form-item prop="username">
           <el-input v-model="username" placeholder="Имя пользователя или email" :disabled="step === 1" @change="password = ''"></el-input>
         </el-form-item>
@@ -16,13 +18,57 @@
           <el-button class="login-submit" type="primary" @click="nextStep">
             Войти
           </el-button>
+        </div>
+      </el-form>
 
-          <el-button class="login-submit" type="secondary" @click="fakeLogin">
-            Фейковый вход
+      <el-form v-if="form === 'register'" class="form" ref="loginForm">
+        <el-form-item prop="username">
+          <el-input v-model="username" placeholder="Имя пользователя" />
+        </el-form-item>
+
+        <el-form-item prop="email">
+          <el-input v-model="email" placeholder="Email" />
+        </el-form-item>
+
+        <el-form-item prop="password">
+          <el-input v-model="password" placeholder="Пароль" show-password />
+        </el-form-item>
+
+        <el-form-item prop="repeatPassword">
+          <el-input v-model="repeatPassword" placeholder="Повторите пароль" show-password />
+        </el-form-item>
+
+        <el-form-item prop="name">
+          <el-input v-model="name" placeholder="Имя" />
+        </el-form-item>
+
+        <el-form-item prop="position">
+          <el-input v-model="position" placeholder="Позиция" />
+        </el-form-item>
+
+        <el-form-item prop="phone">
+          <el-input v-model="phone" placeholder="Телефон" />
+        </el-form-item>
+
+        <el-form-item prop="country">
+          <el-input v-model="country" placeholder="Страна" />
+        </el-form-item>
+
+        <div class="login-actions">
+          <el-button class="login-submit" type="primary" @click="register">
+            Зарегистрироваться
           </el-button>
         </div>
       </el-form>
     </el-card>
+
+    <!-- <el-button v-if="form === 'login'" class="login-submit" type="secondary" link @click="form = 'register'">
+      Регистрация
+    </el-button> -->
+
+    <!-- <el-button v-else-if="form === 'register'" class="login-submit" type="secondary" link @click="form = 'login'">
+      Уже есть аккаунт?
+    </el-button> -->
   </div>
 </template>
 
@@ -37,10 +83,17 @@ definePageMeta({ layout: "login" });
 const { $apiClient } = useNuxtApp();
 const router = useRouter();
 
+const form = ref('login');
 const step = ref(0);
 
 const username = ref('');
+const email = ref('');
 const password = ref('');
+const repeatPassword = ref('');
+const name = ref('');
+const phone = ref('');
+const position = ref('');
+const country = ref('');
 
 const login = async () => {
   try {
@@ -58,13 +111,42 @@ const login = async () => {
     expiresAt.value = response.expires_in;
     await router.push('/');
   } catch (error) {
-    console.log(error)
-    ElMessage.error('Login failed');
+    console.log(error);
+    ElMessage.error('Такого пользователя нет');
+  }
+};
+
+const register = async () => {
+  try {
+    const response = await $apiClient('http://91.243.71.100:8080/api/web-api-gateway/v1/register', {
+      method: 'POST',
+      body: {
+        username: username.value,
+        email: email.value,
+        password: password.value,
+        name: name.value,
+        phone: phone.value,
+        position: position.value,
+        country: country.value,
+      },
+    });
+
+    const token = useCookie('token');
+    const refreshToken = useCookie('refresh_token');
+    const expiresAt = useCookie('expires_at');
+
+    token.value = response.token;
+    refreshToken.value = response.refresh_token;
+    expiresAt.value = response.expires_in;
+    await router.push('/');
+  } catch (error) {
+    console.log(error);
+    ElMessage.error('Такого пользователя нет');
   }
 };
 
 const nextStep = async () => {
-  if (step.value === 0) {
+  if (step.value === 0 && username.value) {
     if (password.value) {
       await login();
       return;
@@ -74,13 +156,12 @@ const nextStep = async () => {
     return;
   }
 
-  await login();
-};
+  if (!username.value) {
+    ElMessage.error('Не ввели username');
+    return;
+  }
 
-const fakeLogin = () => {
-  const token = useCookie('token');
-  token.value = 'fake-token';
-  router.push('/');
+  await login();
 };
 </script>
 
@@ -101,6 +182,7 @@ const fakeLogin = () => {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  gap: 2rem;
 }
 
 .login-card {
