@@ -73,6 +73,10 @@ const form = reactive({
   responsible_person: '',
 });
 
+useHead({
+  title: 'Добавить пользователя — Pomogator',
+});
+
 const onSubmit = async () => {
   try {
     const response = $apiClient('http://91.243.71.100:8080/api/web-api-gateway/v1/warehouse', {

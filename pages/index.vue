@@ -41,6 +41,9 @@
 </template>
 
 <script setup lang="ts">
+useHead({
+  title: 'Главная — Pomogator',
+});
 // const cards = ref([
 //   {
 //     name: 'Дизайн и mock-контент',

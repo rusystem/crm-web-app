@@ -11,6 +11,9 @@
 </template>
 
 <script lang="ts" setup>
+useHead({
+  title: 'Настройки — Pomogator',
+});
 </script>
 
 <style lang="scss" scoped>

@@ -6,6 +6,10 @@
       </nuxt-link> -->
 
       <div class="aside__actions">
+        <el-button ref="ref1" @click="isOpen = !isOpen">
+          <Icon class="aside-close__icon" name="mdi:page-layout-sidebar-left" />
+        </el-button>
+
         <el-button @click="router.push('/')">
           <Icon name="solar:home-2-bold" />
         </el-button>
@@ -19,10 +23,6 @@
             <Icon name="ion:log-out" />
           </el-button>
         </el-tooltip>
-
-        <el-button ref="ref1" @click="isOpen = !isOpen">
-          <Icon class="aside-close__icon" name="mdi:page-layout-sidebar-left" />
-        </el-button>
       </div>
 
       <div class="navigation navigation__first">
@@ -41,7 +41,7 @@
               {{ item.name }}
             </div>
 
-            <el-button v-if="item.canCreate" link size="small" @click="router.push(`${item.to}/create`)">
+            <el-button v-if="item.canCreate" link size="small" @click="router.push(`${item.to}/create`)" :disabled="item.disabled">
               <Icon name="ion:plus" />
             </el-button>
           </div>
@@ -53,7 +53,7 @@
                 {{ item.name }}
               </div>
 
-              <el-button v-if="item.canCreate" link size="small" @click="router.push(`${item.to}/create`)">
+              <el-button v-if="item.canCreate" link size="small" @click="router.push(`${item.to}/create`)" :disabled="item.disabled">
                 <Icon name="ion:plus" />
               </el-button>
             </div>
@@ -74,7 +74,7 @@
                 {{ childrenItem.name }}
               </div>
 
-              <el-button v-if="childrenItem.canCreate" link size="small" @click.stop="router.push(`${childrenItem.to}/create`)">
+              <el-button v-if="childrenItem.canCreate" link size="small" @click.stop="router.push(`${childrenItem.to}/create`)" :disabled="childrenItem.disabled">
                 <Icon name="ion:plus" />
               </el-button>
             </div>
@@ -193,6 +193,13 @@ const navigation = reactive([
         to: '/warehouse',
         canCreate: true,
       },
+      {
+        name: 'Поставщики',
+        icon: 'solar:box-minimalistic-bold-duotone',
+        to: '/suppliers',
+        disabled: true,
+        canCreate: true,
+      },
     ],
   },
   {
@@ -202,6 +209,25 @@ const navigation = reactive([
         name: 'Пользователи',
         icon: 'solar:users-group-rounded-bold',
         to: '/users',
+        canCreate: true,
+      },
+    ],
+  },
+  {
+    name: 'Администрирование',
+    children: [
+      {
+        name: 'Компании',
+        icon: 'solar:users-group-rounded-bold',
+        to: '/companies',
+        disabled: true,
+        canCreate: true,
+      },
+      {
+        name: 'Секции',
+        icon: 'solar:users-group-rounded-bold',
+        to: '/sections',
+        disabled: true,
         canCreate: true,
       },
     ],
@@ -251,10 +277,10 @@ onBeforeUnmount(() => {
     }
 
     .aside {
-      width: 100%;
-      max-width: 280px;
-      left: calc(-280px - .5rem);
-      max-height: calc(100% - 1rem);
+      // width: 100%;
+      // max-width: 280px;
+      // left: calc(-280px - .5rem);
+      // max-height: calc(100% - 1rem);
       // transition: .25s ease;
 
       // &-close {
@@ -314,6 +340,7 @@ onBeforeUnmount(() => {
     // border-color: #f5f5f5;
     // max-height: 32px;
     // padding: 8px 15px;
+    line-height: 1;
   }
 
   &-button {
@@ -427,7 +454,7 @@ onBeforeUnmount(() => {
       margin-top: 1rem;
     }
 
-    &:not(.navigation__item--section) {
+    &:not(.navigation__item--section):not(.navigation__item--disabled) {
       cursor: pointer;
     }
 

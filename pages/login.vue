@@ -69,6 +69,7 @@
     <!-- <el-button v-else-if="form === 'register'" class="login-submit" type="secondary" link @click="form = 'login'">
       Уже есть аккаунт?
     </el-button> -->
+    {{ error }}qrqwr12
   </div>
 </template>
 
@@ -86,18 +87,24 @@ const router = useRouter();
 const form = ref('login');
 const step = ref(0);
 
-const username = ref('');
+const username = ref('admin');
 const email = ref('');
-const password = ref('');
+const password = ref('pomogatoradmin');
 const repeatPassword = ref('');
 const name = ref('');
 const phone = ref('');
 const position = ref('');
 const country = ref('');
 
+useHead({
+  title: 'Авторизация — Pomogator',
+});
+
+const error = ref(null);
+
 const login = async () => {
   try {
-    const response = await $apiClient('http://91.243.71.100:8080/api/web-api-gateway/v1/auth', {
+    const response = await $apiClient('http://91.243.71.100:8080/api/web-api-gateway/v1/auth/', {
       method: 'POST',
       body: { username: username.value, password: password.value },
     });
@@ -112,6 +119,9 @@ const login = async () => {
     await router.push('/');
   } catch (error) {
     console.log(error);
+    error.value = '12312';
+    const token = useCookie('token');
+    alert(error)
     ElMessage.error('Такого пользователя нет');
   }
 };

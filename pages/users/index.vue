@@ -39,6 +39,10 @@
 const items = reactive([]);
 const router = useRouter();
 
+useHead({
+  title: 'Пользователи — Pomogator',
+});
+
 const getItems = async () => {
   try {
     const response = await $apiClient(`http://91.243.71.100:8080/api/web-api-gateway/v1/warehouse`);
