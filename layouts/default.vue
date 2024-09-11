@@ -10,7 +10,7 @@
           <Icon class="aside-close__icon" name="mdi:page-layout-sidebar-left" />
         </el-button>
 
-        <el-button @click="router.push('/')">
+        <!-- <el-button @click="router.push('/')">
           <Icon name="solar:home-2-bold" />
         </el-button>
 
@@ -22,7 +22,7 @@
           <el-button @click="logout">
             <Icon name="ion:log-out" />
           </el-button>
-        </el-tooltip>
+        </el-tooltip> -->
       </div>
 
       <div class="navigation navigation__first">
@@ -82,6 +82,11 @@
         </template>
       </div>
 
+
+      <div class="navigation navigation__second">
+        <el-text class="user__email" tag="b" size="small">{{ profileStore.company?.name_ru }}</el-text>
+      </div>
+
       <!-- <div class="navigation navigation__second">
         <el-button @click="tourOpen = true">
           Tour
@@ -111,6 +116,7 @@
           <el-button v-if="isCreateRoute" class="header-button" @click="goBack">
             <div class="header-button__content">
               <Icon name="ion:arrow-back" />
+              Назад
             </div>
           </el-button>
 
@@ -120,23 +126,24 @@
         </div>
 
         <div class="header-part">
-          <div class="header-item">
-            <el-text class="user__email" tag="b" size="small">{{ profileStore.company?.name_ru }}</el-text>
-          </div>
-
           <el-dropdown placement="bottom-end" @command="handleCommand">
-            <el-button class="header-button">
+            <el-button class="header-button" link>
               <div class="header-button__content user">
-                <el-avatar class="user__avatar" :size="20">
+                <el-avatar class="user__avatar" :size="24">
                   {{ profileStore.user?.username?.split('')[0] }}
                 </el-avatar>
 
-                <el-text class="user__email" tag="b">{{ profileStore.user?.email }}</el-text>
+                <el-text class="user__email" tag="b">{{ profileStore.user?.username }}</el-text>
               </div>
             </el-button>
 
             <template #dropdown>
               <el-dropdown-menu>
+                <div class="user-data">
+                  {{ profileStore.company?.name_ru }}
+                </div>
+
+                <el-dropdown-item command="logout">Редактировать аккаунт</el-dropdown-item>
                 <el-dropdown-item command="logout">Выйти</el-dropdown-item>
               </el-dropdown-menu>
             </template>
@@ -185,7 +192,12 @@ const updateIsMobile = () => {
 
 const navigation = reactive([
   {
-    name: 'Управление',
+    name: 'Главная',
+    to: '/',
+    icon: 'solar:home-2-bold',
+  },
+  {
+    name: 'Складской учет',
     children: [
       {
         name: 'Склады',
@@ -200,33 +212,10 @@ const navigation = reactive([
         disabled: true,
         canCreate: true,
       },
-    ],
-  },
-  {
-    name: 'Аккаунт',
-    children: [
       {
-        name: 'Пользователи',
-        icon: 'solar:users-group-rounded-bold',
-        to: '/users',
-        canCreate: true,
-      },
-    ],
-  },
-  {
-    name: 'Администрирование',
-    children: [
-      {
-        name: 'Компании',
-        icon: 'solar:users-group-rounded-bold',
-        to: '/companies',
-        disabled: true,
-        canCreate: true,
-      },
-      {
-        name: 'Секции',
-        icon: 'solar:users-group-rounded-bold',
-        to: '/sections',
+        name: 'Материалы',
+        icon: 'solar:box-minimalistic-bold-duotone',
+        to: '/suppliers',
         disabled: true,
         canCreate: true,
       },
@@ -375,7 +364,7 @@ onBeforeUnmount(() => {
   z-index: 999;
   transition: left .25s ease;
   left: -232px;
-  background-color: #fafafa;
+  background-color: var(--el-bg-color);
   // border-radius: 8px;
   border: 1px solid var(--el-border-color-lighter);
 
@@ -422,6 +411,10 @@ onBeforeUnmount(() => {
   // border: 1px solid var(--el-border-color-lighter);
   padding: .5rem 0;
   height: 100%;
+
+  &__second {
+    justify-content: end;
+  }
 
   &__section {
     display: flex;
@@ -488,5 +481,14 @@ onBeforeUnmount(() => {
     background-color: #000;
     text-transform: uppercase;
   }
+
+  &-data {
+    padding: .25rem 1rem;
+    color: #939393;
+  }
+}
+
+.el-button+.el-button {
+  margin-left: 0;
 }
 </style>

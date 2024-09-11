@@ -77,7 +77,7 @@ export const useProfile = defineStore('profile', {
       try {
         const token = useCookie('token');
       
-        const response = await useNuxtApp().$apiClient(`http://91.243.71.100:8080/api/web-api-gateway/v1/user/info?token=${token.value}`, {
+        const response = await useNuxtApp().$apiClient(`/user/info?token=${token.value}`, {
           method: 'GET',
         });
 
@@ -92,7 +92,7 @@ export const useProfile = defineStore('profile', {
       try {
         const token = useCookie('token');
       
-        const response = await useNuxtApp().$apiClient(`http://91.243.71.100:8080/api/web-api-gateway/v1/company/info?token=${token.value}`, {
+        const response = await useNuxtApp().$apiClient(`/company/info?token=${token.value}`, {
           method: 'GET',
         });
 

@@ -1,5 +1,7 @@
 import { useAuth } from '~/composables/useAuth';
 
+const baseUrl = 'http://91.243.71.100:8080/api/web-api-gateway/v1';
+
 export default defineNuxtPlugin((nuxtApp) => {
   const { refreshAccessToken } = useAuth();
 
@@ -7,8 +9,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     const token = useCookie('token');
     const expiresAt = useCookie('expires_at');
     const currentTime = Math.floor(Date.now() / 1000);
-
-    console.log(expiresAt.value, currentTime)
 
     if (currentTime >= expiresAt.value) {
       await refreshAccessToken();
@@ -20,7 +20,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     };
 
     try {
-      const response = await $fetch(url, options);
+      const response = await $fetch(`${baseUrl}${url}`, options);
       return response;
     } catch (error) {
       console.error('API request error:', error);

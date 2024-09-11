@@ -1,0 +1,26 @@
+@use "element-plus/theme-chalk/src/common/var.scss" as *;
+
+@use 'sass:map';
+// Override Element Plus variables here
+// $--color-primary: #42b983;
+// $--button-primary-bg-color: #42b983;
+// $--el-color-white: red;
+
+// $color-white: red;
+
+$bg-color: (
+  '': #fafafa, // Основной фон
+  'page': #fafafa, // Фон страницы
+  'overlay': #ffffff, // Фон оверлея
+);
+
+// $colors: map.deep-merge(
+//   $colors,
+//   (
+//     'primary': (
+//       'base': #42b983,
+//     ),
+//   ),
+// );
+
+// $color-primary: map.get($colors, 'primary', 'base') !default;

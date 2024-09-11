@@ -9,7 +9,7 @@ export function useAuth() {
 
   const refreshAccessToken = async () => {
     try {
-      const response = await $fetch('http://91.243.71.100:8080/api/web-api-gateway/v1/auth/refresh', {
+      const response = await useNuxtApp().$apiClient('/auth/refresh', {
         method: 'POST',
         body: {
           refresh_token: refreshToken.value,
@@ -28,11 +28,19 @@ export function useAuth() {
     }
   };
 
-  const logout = () => {
-    token.value = null;
-    refreshToken.value = null;
-    expiresAt.value = null;
-    router.push('/login');
+  const logout = async () => {
+    try {
+      await useNuxtApp().$apiClient('/auth/logout', {
+        method: 'GET',
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      token.value = null;
+      refreshToken.value = null;
+      expiresAt.value = null;
+      router.push('/login');
+    }
   };
 
   return { refreshAccessToken, logout };
