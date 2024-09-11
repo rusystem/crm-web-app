@@ -1,0 +1,33 @@
+name: Deploy CRM-Web-App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Copy files to the server
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" rsync -avz --delete \
+          -e "ssh -o StrictHostKeyChecking=no" \
+          /home/runner/work/crm-web-app/crm-web-app/ ${{ secrets.SSH_USERNAME }}@91.243.71.100:/home/pomogator/crm-web-app
+
+      - name: Deploy CRM-Web-App
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@91.243.71.100 << 'EOF'
+          cd /home/pomogator
+          docker compose build crm-web-app
+          docker compose down crm-web-app
+          docker compose up -d crm-web-app
+          docker image prune -f
+          EOF
